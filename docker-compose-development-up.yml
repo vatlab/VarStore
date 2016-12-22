@@ -1,0 +1,28 @@
+## 
+## docker-compose up configuration file
+## configurations here are for development
+##
+## for staging and production:
+##   1. remove containers ldap and bcbgitsvn
+##   2. remove link to ldap from the fjord_web container
+##   3. remove ports sections in  elasticsearch containers
+##   4. remove volumes of fjord_web/fjord, fjord_web/cgi-bin, and initializatoin
+##      (these are copied to the container by the Dockerfile)
+
+version: '2'
+
+services:
+  es: 
+    build: elasticsearch
+    image: elasticsearch_dp
+    container_name: elasticsearch_dp
+    ports:
+     - "9252:9200"
+     - "9352:9300"
+    volumes:
+      - ./elasticsearch/elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      - TERM=xterm
+      ##  The value for testing on udev5 should be: 10.111.116.4 
+      - DOCKERMACHINE_IP=192.168.99.100
+      - NODE_NAME=elasticsearch_dp
