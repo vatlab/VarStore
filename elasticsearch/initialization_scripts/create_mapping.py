@@ -7,9 +7,9 @@ import logging.handlers
 import sys
 import subprocess
 
-syscall = subprocess.run(["docker-machine","ip","lms"],stdout=subprocess.PIPE)
+syscall = subprocess.run(["docker-machine","ip","default"],stdout=subprocess.PIPE)
 dockermachine_hostname = syscall.stdout.decode("utf-8").strip()
-elasticsearch_port = "9251"
+elasticsearch_port = "9252"
 
 es_logger = logging.getLogger('elasticsearch')
 es_logger.setLevel(logging.ERROR)
@@ -24,7 +24,7 @@ es_tracer.addHandler(es_tracer_handler)
 ## initialize connection to elasticsearch:
 es       = Elasticsearch(host=dockermachine_hostname,port=elasticsearch_port)
 esclient = client.IndicesClient(es)
-index    = 'vatvs'
+index    = 'vatdp'
 
 ## delete index and start over:
 try:
@@ -38,19 +38,28 @@ create_body["settings"] = { "number_of_shards":5, "number_of_replicas":1 }
 
 esclient.create(index=index,body=create_body)
 
-## mapping for 'vatvs' (calling all the documents 'vatvs' for the moment)
+## mapping for 'vatdp' (calling all the documents 'vatdp' for the moment)
 mapping = {}
-mapping["vatvs"] = {}
-mapping["vatvs"]["properties"] = {}
-mapping["vatvs"]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
-mapping["vatvs"]["properties"]["chr"]   = { "type":"integer" }
-mapping["vatvs"]["properties"]["pos"]   = { "type":"integer"}
-mapping["vatvs"]["properties"]["ref"]   = { "type":"string"}
-mapping["vatvs"]["properties"]["alt"]   = { "type":"string"}
+mapping["vatdp"] = {}
+mapping["vatdp"]["properties"] = {}
+mapping["vatdp"]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
+mapping["vatdp"]["properties"]["chr"]   = { "type":"string" }
+mapping["vatdp"]["properties"]["pos"]   = { "type":"integer"}
+mapping["vatdp"]["properties"]["ref"]   = { "type":"string"}
+mapping["vatdp"]["properties"]["alt"]   = { "type":"string"}
+mapping["vatdp"]["properties"]["VT"] = { "type":"string" }
+mapping["vatdp"]["properties"]["AF"] = { "type":"double" }
+mapping["vatdp"]["properties"]["DP"] = { "type":"integer" }
+# mapping["vatdp"]["properties"]["info"]["properties"]["EAS_AF"]={ "type":"double" }
+# mapping["vatdp"]["properties"]["info"]["properties"]["AMR_AF"]={ "type":"double" }
+# mapping["vatdp"]["properties"]["info"]["properties"]["AFR_AF"]={ "type":"double" }
+# mapping["vatdp"]["properties"]["info"]["properties"]["EUR_AF"]={ "type":"double" }
+# mapping["vatdp"]["properties"]["info"]["properties"]["SAS_AF"]={ "type":"double" }
+mapping["vatdp"]["properties"]["samples"]={"type":"string"}
 
 
 try:
-	esclient.put_mapping(index=index,doc_type='vatvs',body=mapping["vatvs"])
+	esclient.put_mapping(index=index,doc_type='vatdp',body=mapping["vatdp"])
 except Exception as e:
 	print ("Error in celllin document mapping")
 	print (e)

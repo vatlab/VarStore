@@ -7,7 +7,7 @@ files=[]
 
 
 def filesInFolder(folder):
-    return [os.path.basename(file) for file in glob.glob(folder+"*vcf.gz")]
+    return [os.path.basename(file) for file in glob.glob(folder+"*22*vcf.gz")]
     
 
 def getHeader(file):
@@ -29,14 +29,21 @@ def getRowFromVCF(file):
     vcfin=pysam.VariantFile(folder+file)
     info=list((vcfin.header.info))
     for row in vcfin.fetch():
-        print (row.id,row.contig,row.pos,row.ref,row.alts[0])
-        # for key in row.info:
-        #     print(key,row.info[key])
-        if len(row.ref)>5:
-            # for sample in row.samples:
-            #     print (sample,row.samples[sample].alleles)
-            #     for key,value in row.samples[sample].iteritems():
-            #         print(key,value)
+        ids=row.id.split(";")
+        if len(ids)>1:
+            for idx,id in enumerate(ids):
+                print (id,row.contig,row.pos,row.ref,row.alts[idx],row.info["AF"][idx])
+                for sample in row.samples:
+                    print (sample,row.samples[sample].alleles)
+                    for key,value in row.samples[sample].iteritems():
+                        print(key,value)
+            # for key in row.info:
+            #     print(key,row.info[key])
+        # if len(row.ref)>5:
+        #     for sample in row.samples:
+        #          print (sample,row.samples[sample].alleles)
+        #          for key,value in row.samples[sample].iteritems():
+        #              print(key,value)
 
 
 
