@@ -27,10 +27,10 @@ esclient = client.IndicesClient(es)
 index    = 'vatdp'
 
 ## delete index and start over:
-try:
-	esclient.delete(index=index)
-except:
-	pass
+# try:
+# 	esclient.delete(index=index)
+# except:
+# 	pass
 
 ## settings to create the index:
 create_body = {}
@@ -47,15 +47,14 @@ mapping["vatdp"]["properties"]["chr"]   = { "type":"string" }
 mapping["vatdp"]["properties"]["pos"]   = { "type":"integer"}
 mapping["vatdp"]["properties"]["ref"]   = { "type":"string"}
 mapping["vatdp"]["properties"]["alt"]   = { "type":"string"}
-mapping["vatdp"]["properties"]["VT"] = { "type":"string" }
 mapping["vatdp"]["properties"]["AF"] = { "type":"double" }
-mapping["vatdp"]["properties"]["DP"] = { "type":"integer" }
-# mapping["vatdp"]["properties"]["info"]["properties"]["EAS_AF"]={ "type":"double" }
-# mapping["vatdp"]["properties"]["info"]["properties"]["AMR_AF"]={ "type":"double" }
-# mapping["vatdp"]["properties"]["info"]["properties"]["AFR_AF"]={ "type":"double" }
-# mapping["vatdp"]["properties"]["info"]["properties"]["EUR_AF"]={ "type":"double" }
-# mapping["vatdp"]["properties"]["info"]["properties"]["SAS_AF"]={ "type":"double" }
-mapping["vatdp"]["properties"]["samples"]={"type":"string"}
+mapping["vatdp"]["properties"]["Genotype"]   = {}
+mapping["vatdp"]["properties"]["Genotype"]["type"] = "nested"
+mapping["vatdp"]["properties"]["Genotype"]["properties"] = {}
+mapping["vatdp"]["properties"]["Genotype"]["properties"]["sampleName"] = {"type":"string", "index": "not_analyzed"}
+mapping["vatdp"]["properties"]["Genotype"]["properties"]["forward"] = {"type":"integer"}
+mapping["vatdp"]["properties"]["Genotype"]["properties"]["reverse"] = {"type":"integer"}
+
 
 
 try:
