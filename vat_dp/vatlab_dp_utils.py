@@ -141,9 +141,9 @@ def generateVCFinput(folder,file):
     index="vatdp"
     doc_type="vatdp"
     for row in vcfin.fetch():
-        count=count+1
-        if count>10000:
-            break
+        # count=count+1
+        # if count>10000:
+        #     break
         ids=row.id.split(";")
         if len(ids)>1:
             for idx,id in enumerate(ids):

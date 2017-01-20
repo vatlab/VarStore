@@ -1,3 +1,4 @@
 .DS_Store
 elasticsearch_data
 input_file
+*.pyc
