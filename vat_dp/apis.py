@@ -12,7 +12,7 @@ def get_variant_by_id(ids,db):
     query["query"]["bool"]["must"]=[]
     query["query"]["bool"]["must"].append({"terms" : { "variantID" : [ids] }})
     query["size"]   = len(ids)
-    result=db.runQuery(query)
+    result=db.runQuery_onVariants(query)
     return result
 
 def get_genotype_by_samplename(sample,db):
@@ -23,8 +23,8 @@ def get_genotype_by_samplename(sample,db):
     query["query"]["nested"]["query"]={}
     query["query"]["nested"]["query"]["bool"]={}
     query["query"]["nested"]["query"]["bool"]["must"]=[]
-    query["query"]["nested"]["query"]["bool"]["must"].append({"term":{"Genotype.sampleName":sample}})
-    result=db.runQuery(query)
+    query["query"]["nested"]["query"]["bool"]["must"].append({"term":{"Genotype.SN":sample}})
+    result=db.runQuery_onGenotypes(query)
     return result
 
 def get_all_variantsID(db):
@@ -32,7 +32,7 @@ def get_all_variantsID(db):
     query["aggs"]={}
     query["aggs"]["ids"]={}
     query["aggs"]["ids"]["terms"]={"field":"variantID","size":0}
-    result=db.runQuery(query)
+    result=db.runQuery_onVariants(query)
     ids=[]
     for id in result["aggregations"]["ids"]["buckets"]:
         ids.append(id["key"])

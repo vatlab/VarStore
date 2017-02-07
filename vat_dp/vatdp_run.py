@@ -13,8 +13,51 @@ import requests
 
 from flask import Flask,jsonify,request
 import simplejson
-from elasticsearch_database import esDatabase
+from elasticsearch_database import esDatabase,esDatabaseAlt
 import apis
+
+
+
+app = Flask(__name__)
+db=esDatabaseAlt()
+
+
+
+@app.route('/vatdp/variants', methods=['GET'])
+def get_all_variantsID():
+    result=apis.get_all_variantsID(db)
+    # return simplejson.dumps(result)
+    return jsonify(result)
+
+
+@app.route('/vatdp/samples/<string:sampleName>', methods=['GET'])
+def get_genotype_by_samplename(sampleName):
+    result=apis.get_genotype_by_samplename(sampleName,db)
+    return jsonify(result)
+
+
+@app.route('/vatdp/variants/<string:variantID>', methods=['GET'])
+def get_variant_by_id(variantID):
+    result=apis.get_variant_by_id([variantID],db)
+    return jsonify(result)
+
+
+@app.route('/vatdp/variants/search', methods=['POST'])
+def search_variants():
+    if not request.json:
+        abort(400)
+    ids=request.json.get('ids')
+    result=apis.get_variant_by_id(ids,db)
+    return jsonify(result)
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+   
+
+
+
 
 
 
@@ -67,46 +110,6 @@ class Dataset:
         self.datasetName=datasetName
         self.metaData=metaData
         self.samples=samples
-
-
-
-app = Flask(__name__)
-db=esDatabase()
-
-
-
-@app.route('/vatdp/variants', methods=['GET'])
-def get_all_variantsID():
-    result=apis.get_all_variantsID(db)
-    # return simplejson.dumps(result)
-    return jsonify(result)
-
-
-@app.route('/vatdp/samples/<string:sampleName>', methods=['GET'])
-def get_genotype_by_samplename(sampleName):
-    result=apis.get_genotype_by_samplename(sampleName,db)
-    return jsonify(result)
-
-
-@app.route('/vatdp/variants/<string:variantID>', methods=['GET'])
-def get_variant_by_id(variantID):
-    result=apis.get_variant_by_id([variantID],db)
-    return jsonify(result)
-
-
-@app.route('/vatdp/variants/search', methods=['POST'])
-def search_variant():
-    if not request.json:
-        abort(400)
-    ids=request.json.get('ids')
-    result=apis.get_variant_by_id(ids,db)
-    return jsonify(result)
-
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
-   
 
 
 
