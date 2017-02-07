@@ -3,15 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to vatAPI's documentation!
-==================================
+VAT API
+!!!!!!!!!
+
+This is the documentation for the `VAT`_ API.
+
+
+Contents
+@@@@@@@@
+
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-
-intro
-vatdp_API
-vatvs_API
-dataAccess_API
+	intro
+	vatdp_API
+	vatvs_API
+	dataAccess_API
