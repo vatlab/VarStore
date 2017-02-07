@@ -11,10 +11,7 @@ Welcome to vatAPI's documentation!
    :caption: Contents:
 
 
-
-Indices and tables
-==================
-
-* :ref:`vatdp_API`
-* :ref:`vatvs_API`
-* :ref:`dataAccess_API`
+intro
+vatdp_API
+vatvs_API
+dataAccess_API
