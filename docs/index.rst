@@ -9,14 +9,17 @@ VAT API
 This is the documentation for the `VAT`_ API.
 
 
-Contents
-@@@@@@@@
+intro
+@@@@@
+vatdp_API
+@@@@@@@@@
+vatvs_API
+@@@@@@@@@
+dataAccess_API
+@@@@@@@@@@@@@@
 
 
 .. toctree::
    :maxdepth: 2
 
-	intro
-	vatdp_API
-	vatvs_API
-	dataAccess_API
+	
