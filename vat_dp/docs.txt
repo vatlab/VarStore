@@ -1,0 +1,25 @@
+@app.route('/vatdp/variants', methods=['GET'])
+def get_all_variantsID()
+'''
+Get all variants ID
+'''
+
+
+@app.route('/vatdp/samples/<string:sampleName>', methods=['GET'])
+def get_genotype_by_samplename(sampleName)
+'''
+Given sampleName and get all genotypes of this sample
+'''
+
+
+@app.route('/vatdp/variants/<string:variantID>', methods=['GET'])
+def get_variant_by_id(variantID)
+'''
+Given variant ID and get chr,pos,ref,alt of this variant
+'''
+
+@app.route('/vatdp/variants/search', methods=['POST'])
+def search_variants()
+'''
+Get a list of variants matching the search criteria
+'''

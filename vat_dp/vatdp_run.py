@@ -61,55 +61,55 @@ if __name__ == '__main__':
 
 
 
-class Variant:
-    """
-        variantID: ID of the variant
-        chr(string): The chromosome on which variant is located.
-        pos(int): The position of variant on the chromosome.
-        ref(string): The reference base of the variant.
-        alt(string): The alternate base of the varaint.
-        genotypes(list<Genotype>): An array of genotypes 
+# class Variant:
+#     """
+#         variantID: ID of the variant
+#         chr(string): The chromosome on which variant is located.
+#         pos(int): The position of variant on the chromosome.
+#         ref(string): The reference base of the variant.
+#         alt(string): The alternate base of the varaint.
+#         genotypes(list<Genotype>): An array of genotypes 
 
-    """
-    def __init__(self,variantID,chr,pos,ref,alt,genotypes):
-        self.variantID=variantID
-        self.chr=chr
-        self.pos=pos
-        self.ref=ref
-        self.alt=alt
-        self.genotypes=genotypes
+#     """
+#     def __init__(self,variantID,chr,pos,ref,alt,genotypes):
+#         self.variantID=variantID
+#         self.chr=chr
+#         self.pos=pos
+#         self.ref=ref
+#         self.alt=alt
+#         self.genotypes=genotypes
 
-class Genotype:
-    """
-        sampleName(string): The name of the sample
-        variantID(string): The ID of the variant
-    """
-    def __init__(self,sampleName,variantID):
-        self.sampleName=sampleName
-        self.variantID=varaintID
+# class Genotype:
+#     """
+#         sampleName(string): The name of the sample
+#         variantID(string): The ID of the variant
+#     """
+#     def __init__(self,sampleName,variantID):
+#         self.sampleName=sampleName
+#         self.variantID=varaintID
 
-class Sample:
-    """
-        sampleName(string): The name of the sample
-        datasetname(string): The name of the dataset that sample is in, (e.g 1000 genome)
-        metaData(map<string,string>): The meta data of the sample
-    """
-    def __init__(self,sampleName,datasetName,metaData):
-        self.sampleName=sampleName
-        self.datasetName=datasetName
-        self.metaData=metaData
+# class Sample:
+#     """
+#         sampleName(string): The name of the sample
+#         datasetname(string): The name of the dataset that sample is in, (e.g 1000 genome)
+#         metaData(map<string,string>): The meta data of the sample
+#     """
+#     def __init__(self,sampleName,datasetName,metaData):
+#         self.sampleName=sampleName
+#         self.datasetName=datasetName
+#         self.metaData=metaData
 
-class Dataset:
-    """
-        datasetName(string): The name of the dataset
-        metaData(map<string,string>): The metadata of the dataset
-        samples(list<string>): The samples in this dataset 
+# class Dataset:
+#     """
+#         datasetName(string): The name of the dataset
+#         metaData(map<string,string>): The metadata of the dataset
+#         samples(list<string>): The samples in this dataset 
 
-    """
-    def __init__(self,datasetName,samples):
-        self.datasetName=datasetName
-        self.metaData=metaData
-        self.samples=samples
+#     """
+#     def __init__(self,datasetName,samples):
+#         self.datasetName=datasetName
+#         self.metaData=metaData
+#         self.samples=samples
 
 
 
