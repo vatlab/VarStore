@@ -14,6 +14,14 @@ vatvs_API
         We should make the "handle" some sort of property of "connection" so that we do not have to
 	specify it again.
 
+* (Bo) List annotation databases, their types, and their fields. This would allow the users to specify
+	for example gene names using annotation databases defined in the vs.
+	.. code-block:: python
+		
+		@app.route('/vatvs/variants/list_fields')
+		def list_fields()
+			
+
 * Given varaints information, return variantIDs
 	This API will be called from vatdp to get variantIDs for variants in the VCF file. 
 
