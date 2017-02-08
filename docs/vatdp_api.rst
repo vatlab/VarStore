@@ -3,7 +3,7 @@ vatdp_API
 
 
 * Given a bag of variants ID, get variants genotypes
-	This API will be called from VAT to get genotypes of samples given a bag of variant IDs.
+	This API will be called from VAT to get genotypes of samples given an array of variant IDs.
 
 	.. code-block:: python
 

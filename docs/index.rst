@@ -8,6 +8,8 @@ VAT API
 
 This is the documentation for the VAT API.
 
+.. image:: vatAPI.jpg
+
 
 
 .. * :ref:`vatdp_API`
