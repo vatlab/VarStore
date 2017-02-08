@@ -1,8 +1,15 @@
 vatdp_dataAccess_API
 !!!!!!!!!!!!!!!!!!!!
 
-* Given variantsID, get genoytpes
+* Given variantIDs, get genoytpes
 
 	.. code-block:: python
 
-		def get_variants_genotypes(variantIDs)
+		def get_genotypes_by_variantsIDs(variantIDs,db)
+
+
+* Given sampleName, get genoytpes
+
+	.. code-block:: python
+
+		def get_genotypes_by_sampleName(sampleName,db)

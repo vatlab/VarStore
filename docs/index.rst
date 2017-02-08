@@ -22,6 +22,14 @@ This is the documentation for the VAT API.
 
    vatdp_api
 
+.. _vatdp_dataAccess_API:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: vat data provider data access API
+
+   vatdp_dataAccess_api
+
 
 .. _vatvs_API:
 
@@ -31,13 +39,14 @@ This is the documentation for the VAT API.
 
    vatvs_api
 
-.. _vatdp_dataAccess_API:
+
+.. _vatvs_dataAccess_API:
 
 .. toctree::
    :maxdepth: 2
-   :caption: vat data provider data access API
+   :caption: vat variant server data access API
 
-   vatdp_dataAccess_api
+   vatvs_dataAccess_api
 
 
 
