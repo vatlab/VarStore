@@ -6,20 +6,41 @@
 VAT API
 !!!!!!!!!
 
-This is the documentation for the `VAT`_ API.
+This is the documentation for the VAT API.
 
 
-intro
-@@@@@
-vatdp_API
-@@@@@@@@@
-vatvs_API
-@@@@@@@@@
-dataAccess_API
-@@@@@@@@@@@@@@
 
+.. * :ref:`vatdp_API`
+.. * :ref:`vatvs_API`
+.. * :ref:`dataAccess_API`
+
+.. _vatdp_API:
 
 .. toctree::
    :maxdepth: 2
+   :caption: vat data provider webservice API
+
+   vatdp_api
+
+
+.. _vatvs_API:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: vat variant server webservice API
+
+   vatvs_api
+
+.. _vatdp_dataAccess_API:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: vat data provider data access API
+
+   vatdp_dataAccess_api
+
+
+
+
 
 	

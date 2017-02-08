@@ -2,3 +2,6 @@
 elasticsearch_data
 input_file
 *.pyc
+_build
+_static
+_templates
