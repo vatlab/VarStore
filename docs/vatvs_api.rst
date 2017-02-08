@@ -1,6 +1,18 @@
 vatvs_API
 !!!!!!!!!
 
+* (Bo) Query the reference genome used by the variant server?? This is not needed if the variant server accepts multiple reference genomes. 
+
+* (Bo) Set the reference genome (and perhaps format of input) for later queries. For example,
+        .. code-block:: python
+	        
+		@app.route('/vatvs/variants/create_handle')
+		def create_connection(refgenome, format='vcf')
+		     return None if the server does not support specified refgenome or input format
+		     otherwise return a unique ID for connection (something like hg19vcf_89876)
+		     
+        We should make the "handle" some sort of property of "connection" so that we do not have to
+	specify it again.
 
 * Given varaints information, return variantIDs
 	This API will be called from vatdp to get variantIDs for variants in the VCF file. 
