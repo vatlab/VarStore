@@ -31,7 +31,15 @@ vatvs_API
 		@app.route('/vatvs/variants/gene/<string:geneName>', methods=['GET'])
 		def get_variants_in_gene(geneName)
 
-
+	(Bo): gene is a vague word. We should allow the use of arbitary annotation database,
+	something like: refGene.name="ASD". The query will then go to the refGene database
+	search for ASD in the field name, get the range of this gene, and find all variants
+	within the range. Similarly, users can do refGene_exons.name="ASD". This refGene_exons
+	database would store reanges of exons so there are several rows for name ASD (one
+	for each exon), and we can then get all variants within the exon regions of the gene.
+	Of course there are similar databases for different gene definitions and other "ranges"
+	such as cytoband.
+	
 * Given search criteria, return variantIDs
 	This API will be called from VAT to get variantIDs for certain search criteria .
 
