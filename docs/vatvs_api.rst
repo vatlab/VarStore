@@ -1,24 +1,14 @@
 vatvs_API
 !!!!!!!!!
 
-* (Bo) Query the reference genome used by the variant server?? This is not needed if the variant server accepts multiple reference genomes. 
 
-* (Bo) Set the reference genome (and perhaps format of input) for later queries. For example,
-        .. code-block:: python
-	        
-		@app.route('/vatvs/variants/create_handle')
-		def create_connection(refgenome, format='vcf')
-		     return None if the server does not support specified refgenome or input format
-		     otherwise return a unique ID for connection (something like hg19vcf_89876)
-		     
-        We should make the "handle" some sort of property of "connection" so that we do not have to
-	specify it again.
 
-* (Bo) List annotation databases, their types, and their fields. This would allow the users to specify
-	for example gene names using annotation databases defined in the vs.
+* List annotation databases, their types, and their fields. 
+	This API will be called from VAT for users to find out which databases in variant server are available for query. 
+
 	.. code-block:: python
 		
-		@app.route('/vatvs/variants/list_fields')
+		@app.route('/vatvs/variants/list_fields',methods=['GET'])
 		def list_fields()
 			
 
@@ -28,25 +18,34 @@ vatvs_API
 	.. code-block:: python
 
 		@app.route('/vatvs/variants/variantsID', methods=['POST'])
-		def get_variantsID()
+		def get_variantIDs()
+
+
+* Given chromosome and range, return variantIDs
+	This API will be called from VAT to get variantIDs for variants in the specified range on a chromosome. 
+
+	.. code-block:: python
+
+		@app.route('/vatvs/variants/<string:chromosome,range>', methods=['GET'])
+		def get_variants_by_chromosome_range(chr,range)
+
+* Given fields and range, return variantIDs
+	This API will be called from VAT to get variantIDs for variants in the specified range of a field. 
+
+	.. code-block:: python
+
+		@app.route('/vatvs/variants/<string:field,range>', methods=['GET'])
+		def get_variants_by_field_range(field,range)
 
 
 * Given gene name, return variantIDs
-	This API will be called from VAT to get variantIDs for a gene.
+	This API will be called from VAT to get variantIDs for a gene. The gene name could be a string specifying which database will be searched, for example 'refGene.name="ASD"'. 
 
 	.. code-block:: python
 
 		@app.route('/vatvs/variants/gene/<string:geneName>', methods=['GET'])
 		def get_variants_in_gene(geneName)
 
-	(Bo): gene is a vague word. We should allow the use of arbitary annotation database,
-	something like: refGene.name="ASD". The query will then go to the refGene database
-	search for ASD in the field name, get the range of this gene, and find all variants
-	within the range. Similarly, users can do refGene_exons.name="ASD". This refGene_exons
-	database would store reanges of exons so there are several rows for name ASD (one
-	for each exon), and we can then get all variants within the exon regions of the gene.
-	Of course there are similar databases for different gene definitions and other "ranges"
-	such as cytoband.
 	
 * Given search criteria, return variantIDs
 	This API will be called from VAT to get variantIDs for certain search criteria .
@@ -72,3 +71,11 @@ vatvs_API
 
 		@app.route('/vatvs/annotation/variant/<string:variantID>', methods=['GET'])
 		def get_annotations_by_variantID(variantID)
+
+* Given variantIDs, return annotations
+	This API will be called from VAT to get annotations for a batch query of variantIDs.
+
+	.. code-block:: python
+
+		@app.route('/vatvs/annotation/variant', methods=['POST'])
+		def get_annotations_by_variantIDs([variantIDs])
