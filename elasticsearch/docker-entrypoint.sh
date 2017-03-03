@@ -2,16 +2,16 @@
 
 set -e
 
-printf 'discovery.zen.ping.unicast.hosts: ["es:9300"] \n'  >>  /usr/share/elasticsearch/config/elasticsearch.yml
-#printf 'discovery.zen.ping.unicast.hosts: ["${DOCKERMACHINE_IP}:9311", "${DOCKERMACHINE_IP}:9312" ]\n'  >>  /usr/share/elasticsearch/config/elasticsearch.yml
+printf 'discovery.zen.ping.unicast.hosts: ["${DOCKERMACHINE_IP}:9350", "${DOCKERMACHINE_IP}:9351" ]\n'  >>  /usr/share/elasticsearch/config/elasticsearch.yml
 printf 'network.host: 0.0.0.0 \n'    >> /usr/share/elasticsearch/config/elasticsearch.yml
-printf "discovery.zen.minimum_master_nodes: 1 \n" >> /usr/share/elasticsearch/config/elasticsearch.yml
+printf "discovery.zen.minimum_master_nodes: 2 \n" >> /usr/share/elasticsearch/config/elasticsearch.yml
 printf "http.cors.enabled: true \n"               >> /usr/share/elasticsearch/config/elasticsearch.yml
-printf "cluster.name: vatlab_cluster \n"        >> /usr/share/elasticsearch/config/elasticsearch.yml
-printf 'node.name: vatlab_node \n'             >> /usr/share/elasticsearch/config/elasticsearch.yml
+printf "cluster.name: cellline_cluster \n"        >> /usr/share/elasticsearch/config/elasticsearch.yml
+printf 'node.name: "${NODE_NAME}" \n'             >> /usr/share/elasticsearch/config/elasticsearch.yml
 printf 'cluster.routing.allocation.disk.watermark.low : 1gb \n'  >> /usr/share/elasticsearch/config/elasticsearch.yml
 printf 'cluster.routing.allocation.disk.watermark.high: 1gb \n'  >> /usr/share/elasticsearch/config/elasticsearch.yml
 
+cat /usr/share/elasticsearch/config/elasticsearch.yml
 
 # Add elasticsearch as command if needed
 if [ "${1:0:1}" = '-' ]; then
@@ -27,10 +27,6 @@ if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 	set -- gosu elasticsearch "$@"
 	#exec gosu elasticsearch "$BASH_SOURCE" "$@"
 fi
-
-## allow other users to have access to the mounted volume:
-chmod -R 777  /usr/share/elasticsearch/data
-
 
 # As argument is not related to elasticsearch,
 # then assume that user wants to run his own process,

@@ -10,7 +10,7 @@ ENV LANG C.UTF-8
 ##
 ## Add some things that help in development
 ##
-RUN apk update && apk add vim curl bash
+RUN apk update && apk add bash curl vim
 
 ##
 ## install gosu for entrypoint function
@@ -43,6 +43,7 @@ ENV PATH /usr/share/elasticsearch/bin:$PATH
 ##  (assuming your hostname is 192.168.99.101 and you used port 9200 
 ##   
 RUN /usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head
+RUN /usr/share/elasticsearch/bin/plugin install delete-by-query
 
 ##
 ## configurations for elasticsearch
@@ -53,6 +54,8 @@ RUN adduser -D -h /usr/share/elasticsearch  elasticsearch
 RUN mkdir -p /usr/share/elasticsearch/logs && \
     mkdir -p /usr/share/elasticsearch/plugins
 COPY config /usr/share/elasticsearch/
+
+## customizations to elasticsearch.yml moved to docker-entrypoint function
 
 ## mounted volume for elasticsearch data 
 VOLUME /usr/share/elasticsearch/data
@@ -65,18 +68,24 @@ RUN chmod -R g+w /usr/share/elasticsearch/data/  && \
 ## Hack to allow elasticsearch user to write to mounted volumes:
 ## (this shouldn't be needed on a linux machine??)
 ## (https://github.com/docker-library/elasticsearch/issues/27)
-## RUN usermod -u 1000 elasticsearch
+#RUN usermod -u 1000 elasticsearch
 
 
 ##
 ## Add some things that help in development
-##
-RUN printf 'PS1="\u@elastic:$ "\n'        >> /root/.bashrc  && \
-    printf 'alias ls="ls --color=auto"\n' >> /root/.bashrc  && \
-    printf "syntax on\n"     >> /root/.vimrc  && \
-    printf ":set hlsearch\n" >> /root/.vimrc  && \
-    printf ":set ruler\n"    >> /root/.vimrc  && \
-    echo '-w "\n"'       >> /root/.curlrc
+####
+## user configurations
+## (it's nice to have pretty when you log in)
+RUN mkdir -p /etc/skel   && \
+    printf 'PS1="\u@lms_elasticsearch:$ "\nalias ls="ls --color=auto"\nalias vi=vim\n' >> /etc/skel/.bashrc && \
+    printf "syntax on\n:set hlsearch\n:set ruler\n:set ts=2\n:set list\n:set listchars=tab:<>\n" >> /etc/skel/.vimrc && \
+    echo '-w "\\n"' >> /etc/skel/.curlrc   && \
+    cp /etc/skel/.bashrc /root/  && \
+    cp /etc/skel/.vimrc  /root/  && \
+    cp /etc/skel/.curlrc /root/  && \
+    cp /etc/skel/.bashrc /usr/share/elasticsearch/  && \
+    cp /etc/skel/.vimrc  /usr/share/elasticsearch/  && \
+    cp /etc/skel/.curlrc /usr/share/elasticsearch/
 
 EXPOSE 9200 9300
 ENTRYPOINT ["/docker-entrypoint.sh"]
