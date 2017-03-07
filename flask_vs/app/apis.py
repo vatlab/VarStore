@@ -2,10 +2,12 @@ import vatlab_dp_utils
 from random import randint
 import time
 from itertools import islice
+import main as dprun
 
 
 
-def get_variant_by_id(ids,db):
+def get_variant_by_id(ids):
+    db=dprun.get_db()
     query = {}
     query["query"] = {}
     query["query"]["bool"] = {}
@@ -15,7 +17,8 @@ def get_variant_by_id(ids,db):
     result=db.runQuery_onVariants(query)
     return result
 
-def get_genotype_by_samplename(sample,db):
+def get_genotype_by_samplename(sample):
+    db=dprun.get_db()
     query={}
     query["query"]={}
     query["query"]["nested"]={}
@@ -27,7 +30,8 @@ def get_genotype_by_samplename(sample,db):
     result=db.runQuery_onGenotypes(query)
     return result
 
-def get_all_variantsID(db):
+def get_all_variantsID():
+    db=dprun.get_db()
     query={}
     query["aggs"]={}
     query["aggs"]["ids"]={}

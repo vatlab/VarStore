@@ -1,0 +1,56 @@
+##
+## building the elasticsearch and apache containers
+##
+version: '2'
+
+services:
+  es-vat-vs-2:
+    build: es_vs
+    image: vat_vs_elasticsearch
+    container_name: es-vat-vs-2
+    ports:
+    - "9250:9200"
+    - "9350:9300"
+    links:
+    - es-vat-vs-1:es-vat-vs-1
+    volumes:
+    - /Users/jma7/Development/vat_data_provider/es_vs/elasticsearch_data/es_data2:/usr/share/elasticsearch/data
+    # - ./elasticsearch/scripts:/root/scripts
+    environment:
+    - TERM=xterm
+    - DOCKERMACHINE_IP=${DOCKERMACHINE_HOSTNAME}
+   # - DOCKERMACHINE_IP=192.168.99.100
+    - NODE_NAME=es-vat-vs-2
+
+  es-vat-vs-1:
+    build: es_vs
+    image: vat_vs_elasticsearch
+    container_name: es-vat-vs-1
+    volumes:
+    - /Users/jma7/Development/vat_data_provider/es_vs/elasticsearch_data/es_data1:/usr/share/elasticsearch/data
+    # - ./elasticsearch/scripts:/root/scripts
+    ports:
+    - "9251:9200"
+    - "9351:9300"
+    environment:
+    - TERM=xterm
+    - DOCKERMACHINE_IP=${DOCKERMACHINE_HOSTNAME}
+  #  - DOCKERMACHINE_IP=192.168.99.100
+    - NODE_NAME= es-vat-vs-1
+
+  flask_vs:
+    build: flask_vs
+    image: flask_vs
+    container_name: flask_vat_vs
+    ports:
+    - "80:80"
+    links:
+    - es-vat-vs-1:es-vat-vs-1
+    # volumes:
+    # - /Users/jma7/Development/vat_data_provider/flask_dp/app:/app
+    environment:
+    - TERM=xterm
+      ##  The value for testing on udev5 should be: 10.111.116.4 
+    - DOCKERMACHINE_IP=${DOCKERMACHINE_HOSTNAME}
+    - NODE_NAME=flask_vat_vs
+

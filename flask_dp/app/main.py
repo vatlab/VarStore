@@ -4,14 +4,14 @@ import json
 import os
 import random
 import re
-import pysam
+
 from random import randint
 
 import sys
 import subprocess
 import requests 
 
-from flask import Flask,jsonify,request
+from flask import Flask,jsonify,request,g
 import simplejson
 from elasticsearch_database import esDatabase,esDatabaseAlt
 import apis
@@ -19,26 +19,31 @@ import apis
 
 
 app = Flask(__name__)
-db=esDatabaseAlt()
+# db=esDatabaseAlt()
+
+def get_db():
+    if not hasattr(g,"vatDPes"):
+        g.vatDPes=esDatabaseAlt()
+    return g.vatDPes
 
 
 
 @app.route('/vatdp/variants', methods=['GET'])
 def get_all_variantsID():
-    result=apis.get_all_variantsID(db)
+    result=apis.get_all_variantsID()
     # return simplejson.dumps(result)
     return jsonify(result)
 
 
 @app.route('/vatdp/samples/<string:sampleName>', methods=['GET'])
 def get_genotype_by_samplename(sampleName):
-    result=apis.get_genotype_by_samplename(sampleName,db)
+    result=apis.get_genotype_by_samplename(sampleName)
     return jsonify(result)
 
 
 @app.route('/vatdp/variants/<string:variantID>', methods=['GET'])
 def get_variant_by_id(variantID):
-    result=apis.get_variant_by_id([variantID],db)
+    result=apis.get_variant_by_id([variantID])
     return jsonify(result)
 
 
@@ -47,13 +52,17 @@ def search_variants():
     if not request.json:
         abort(400)
     ids=request.json.get('ids')
-    result=apis.get_variant_by_id(ids,db)
+    result=apis.get_variant_by_id(ids)
     return jsonify(result)
+
+@app.route("/")
+def hello():
+    return "Hello World from Flask"
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True,port=80)
    
 
 

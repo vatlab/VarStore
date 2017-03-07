@@ -16,8 +16,8 @@ import logging
 import logging.handlers
 
 
-syscall = subprocess.run(["docker-machine","ip","default"],stdout=subprocess.PIPE)
-elasticsearch_port = "9252"
+syscall = subprocess.run(["docker-machine","ip","vat-dp"],stdout=subprocess.PIPE)
+elasticsearch_port = "9253"
 dockermachine_hostname = syscall.stdout.decode("utf-8").strip()
 
 
@@ -38,7 +38,7 @@ es       = Elasticsearch(host=dockermachine_hostname,port=elasticsearch_port,tim
 esclient = client.IndicesClient(es)
 
 
-filePath="/Users/jma7/Development/vat_data_provider/elasticsearch/input_file/test_data_variants.txt"
+filePath="/Users/jma7/Development/vat_data_provider/es_dp/input_file/test_data_variants.txt"
 result = open(filePath,'r')
 
 def bulkGenerator(result):
