@@ -25,7 +25,7 @@ import logging.handlers
 
 syscall = subprocess.run(["docker-machine","ip","default"],stdout=subprocess.PIPE)
 dockermachine_hostname = syscall.stdout.decode("utf-8").strip()
-elasticsearch_port = "9252"
+elasticsearch_port = "9251"
 
 
 es_logger = logging.getLogger('elasticsearch')

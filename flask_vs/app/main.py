@@ -13,6 +13,7 @@ import requests
 from flask import Flask,jsonify,request,g
 import simplejson
 from elasticsearch_database import esDatabase
+import vatVS_DA_apis as apis
 
 
 
@@ -21,9 +22,9 @@ app = Flask(__name__)
 # db=esDatabaseAlt()
 
 def get_db():
-    if not hasattr(g,"vatDPes"):
-        g.vatDPes=esDatabaseAlt()
-    return g.vatDPes
+    if not hasattr(g,"vatVSes"):
+        g.vatVSes=esDatabase()
+    return g.vatVSes
 
 @app.route('/vatvs/variants/list_fields',methods=['GET'])
 def list_fields():
@@ -32,7 +33,11 @@ def list_fields():
 
 @app.route('/vatvs/variants/variantsID', methods=['POST'])
 def get_variantIDs():
-    pass
+    if not request.json:
+        abort(400)
+    ids=request.json.get('ids')
+    result=apis.get_variantIDs(ids)
+    return jsonify(result)
 
 
 @app.route('/vatvs/variants/<string:chromosome>', methods=['GET'])

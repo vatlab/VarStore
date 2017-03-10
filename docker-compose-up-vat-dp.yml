@@ -45,7 +45,7 @@ services:
         links:
         - es-vat-dp-1:es-vat-dp-1
         # volumes:
-        # - /Users/jma7/Development/vat_data_provider/flask_dp/app:/app
+        # - .:/app
         environment:
         - TERM=xterm
           ##  The value for testing on udev5 should be: 10.111.116.4 

@@ -2,7 +2,8 @@ import pysam
 import glob
 import os
 import json
-
+import myvariant
+import requests
 
 def filesInFolder(folder):
     return [os.path.basename(file) for file in glob.glob(folder+"*chr22*vcf.gz")]
@@ -136,7 +137,7 @@ def creatVCFdict(folder,file):
 def generateVCFinput(folder,file):
     vcfin=pysam.VariantFile(folder+file)
     info=list((vcfin.header.info))
-    output=open("/Users/jma7/Development/vat_data_provider/elasticsearch/input_file/test_data_1.txt","w")
+    output=open("/Users/jma7/Development/vat_data_provider/es_dp/input_file/test_data_1.txt","w")
     count=0
     index="vatdp"
     doc_type="vatdp"
@@ -148,12 +149,13 @@ def generateVCFinput(folder,file):
         if len(ids)>1:
             for idx,id in enumerate(ids):
                 # print (id,row.contig,row.pos,row.ref,row.alts[idx],row.info["AF"][idx])
-                source={}
-                source["variantID"]=id
+                source={}   
                 source["chr"]=row.contig
                 source["pos"]=row.pos
                 source["ref"]=row.ref
                 source["alt"]=row.alts[idx]
+                hgvsID=myvariant.format_hgvs(source["chr"],source["pos"],source["ref"],source["alt"])
+                source["variantID"]=hgvsID
                 source["AF"]=row.info["AF"][idx]
                 source["Genotype"]=[]
                 for sample in row.samples:
@@ -168,19 +170,20 @@ def generateVCFinput(folder,file):
                             source["Genotype"].append({"sampleName":sample,"forward":value[0],"reverse":value[1]})
                         elif (value[0]==idx+1 and value[1]>0):
                             source["Genotype"].append({"sampleName":sample,"forward":value[0],"reverse":value[1]})
-                doc_id  = id
+                doc_id  = hgvsID
                 action={"_index" : index, "_type" : doc_type, "_id" : doc_id, "_source" : source}
                 output.write(json.dumps(action)+"\n")
                 # print(len(zzarray),len(ooarray),len(zoarray),len(ozarray),len(mmarray))
         else:
             # print (ids[0],row.contig,row.pos,row.ref,row.alts[0],row.info["AF"][0])
             source={}
-            id=ids[0]
-            source["variantID"]=id
+            id=ids[0] 
             source["chr"]=row.contig
             source["pos"]=row.pos
             source["ref"]=row.ref
             source["alt"]=row.alts[0]
+            hgvsID=myvariant.format_hgvs(source["chr"],source["pos"],source["ref"],source["alt"])
+            source["variantID"]=hgvsID
             source["AF"]=row.info["AF"][0]
             source["Genotype"]=[]
             for sample in row.samples:
@@ -190,7 +193,7 @@ def generateVCFinput(folder,file):
                     else:
                         source["Genotype"].append({"sampleName":sample,"forward":value[0],"reverse":value[1]})
             # print(len(zzarray),len(ooarray),len(zoarray),len(ozarray))
-            doc_id  = id
+            doc_id  = hgvsID
             action={"_index" : index, "_type" : doc_type, "_id" : doc_id, "_source" : source}
             output.write(json.dumps(action)+"\n")
     output.close()
@@ -199,12 +202,13 @@ def generateVCFinput(folder,file):
 def generateVCFinputAlt(folder,file):
     vcfin=pysam.VariantFile(folder+file)
     info=list((vcfin.header.info))
-    output_variants=open("/Users/jma7/Development/vat_data_provider/elasticsearch/input_file/test_data_variants.txt","w")
-    output_genotypes=open("/Users/jma7/Development/vat_data_provider/elasticsearch/input_file/test_data_genotypes.txt","w")
+    output_variants=open("/Users/jma7/Development/vat_data_provider/es_dp/input_file/test_data_variants_check.txt","w")
+    output_genotypes=open("/Users/jma7/Development/vat_data_provider/es_dp/input_file/test_data_genotypes_check.txt","w")
     count=0
-    index="vatdpalt"
-    doc_type_variants="vatdp_variants"
-    doc_type_genotypes="vatdp_genotypes"
+    index="vatdp"
+    doc_type_variants="dp_v"
+    doc_type_genotypes="dp_g"
+    print("Start")
     for row in vcfin.fetch():
         count=count+1
         if count>10000:
@@ -214,60 +218,97 @@ def generateVCFinputAlt(folder,file):
             for idx,id in enumerate(ids):
                 # print (id,row.contig,row.pos,row.ref,row.alts[idx],row.info["AF"][idx])
                 source={}
-                source["variantID"]=id
+                # source["variantID"]=id
                 source["chr"]=row.contig
                 source["pos"]=row.pos
                 source["ref"]=row.ref
                 source["alt"]=row.alts[idx]
-                doc_id  = id
+                hgvsID=myvariant.format_hgvs(source["chr"],source["pos"],source["ref"],source["alt"])
+                res=requests.post("http://192.168.99.103/vatvs/variants/variantsID",json={"ids":[hgvsID]})
+                print(res.json())
+                doc_id  = hgvsID
+                source["variantID"]=hgvsID
                 action={"_index" : index, "_type" : doc_type_variants, "_id" : doc_id, "_source" : source}
                 output_variants.write(json.dumps(action)+"\n")
 
                 source={}
-                source["variantID"]=id
-                source["Genotype"]=[]
+                source["variantID"]=hgvsID
+                source["Genotype"]={}
                 for sample in row.samples:
                     for key,value in row.samples[sample].iteritems():
                         if (value[0]==value[1]==0):
-                            pass      
+                            continue
                         elif (value[0]==value[1]==idx+1):
-                            source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
+                            source["Genotype"]={"SN":sample,"F":value[0],"R":value[1]}
                         elif (value[0]==0 and value[1]==idx+1):
-                            source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
+                            source["Genotype"]={"SN":sample,"F":value[0],"R":value[1]}
                         elif (value[0]==idx+1 and value[1]==0):
-                            source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
+                            source["Genotype"]={"SN":sample,"F":value[0],"R":value[1]}
                         elif (value[0]==idx+1 and value[1]>0):
-                            source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
+                            source["Genotype"]={"SN":sample,"F":value[0],"R":value[1]}
+                        action={"_index" : index, "_type" : doc_type_genotypes, "_source" : source}
+                        output_genotypes.write(json.dumps(action)+"\n")
+
+                # source={}
+                # source["variantID"]=id
+                # source["Genotype"]=[]
+                # for sample in row.samples:
+                #     for key,value in row.samples[sample].iteritems():
+                #         if (value[0]==value[1]==0):
+                #             pass      
+                #         elif (value[0]==value[1]==idx+1):
+                #             source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
+                #         elif (value[0]==0 and value[1]==idx+1):
+                #             source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
+                #         elif (value[0]==idx+1 and value[1]==0):
+                #             source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
+                #         elif (value[0]==idx+1 and value[1]>0):
+                #             source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
                 
-                action={"_index" : index, "_type" : doc_type_genotypes, "_id" : doc_id, "_source" : source}
-                output_genotypes.write(json.dumps(action)+"\n")
-                # print(len(zzarray),len(ooarray),len(zoarray),len(ozarray),len(mmarray))
+                # action={"_index" : index, "_type" : doc_type_genotypes, "_id" : doc_id, "_source" : source}
+                # output_genotypes.write(json.dumps(action)+"\n")
+             
         else:
             # print (ids[0],row.contig,row.pos,row.ref,row.alts[0],row.info["AF"][0])
             source={}
             id=ids[0]
-            source["variantID"]=id
+            
             source["chr"]=row.contig
             source["pos"]=row.pos
             source["ref"]=row.ref
             source["alt"]=row.alts[0]
-            doc_id  = id+"va"
+            hgvsID=myvariant.format_hgvs(source["chr"],source["pos"],source["ref"],source["alt"])
+            source["variantID"]=hgvsID
+            doc_id  = hgvsID+"va"
             action={"_index" : index, "_type" : doc_type_variants, "_id" : doc_id, "_source" : source}
             output_variants.write(json.dumps(action)+"\n")
-            
+
             source={}
-            source["variantID"]=id
-            source["Genotype"]=[]
+            source["variantID"]=hgvsID
+            source["Genotype"]={}
             for sample in row.samples:
                 for key,value in row.samples[sample].iteritems():
                     if (value[0]==value[1]==0):
-                        pass
+                        continue
                     else:
-                        source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
-            # print(len(zzarray),len(ooarray),len(zoarray),len(ozarray))
-            doc_id  = id+"geno"
-            action={"_index" : index, "_type" : doc_type_genotypes, "_id" : doc_id, "_source" : source}
-            output_genotypes.write(json.dumps(action)+"\n")
+                        source["Genotype"]={"SN":sample,"F":value[0],"R":value[1]}
+                    doc_id  = hgvsID+"_"+sample+"_"+key
+                    action={"_index" : index, "_type" : doc_type_genotypes, "_source" : source}
+                    output_genotypes.write(json.dumps(action)+"\n")
+            
+            # source={}
+            # source["variantID"]=id
+            # source["Genotype"]=[]
+            # for sample in row.samples:
+            #     for key,value in row.samples[sample].iteritems():
+            #         if (value[0]==value[1]==0):
+            #             pass
+            #         else:
+            #             source["Genotype"].append({"SN":sample,"F":value[0],"R":value[1]})
+            # # print(len(zzarray),len(ooarray),len(zoarray),len(ozarray))
+            # doc_id  = id+"geno"
+            # action={"_index" : index, "_type" : doc_type_genotypes, "_id" : doc_id, "_source" : source}
+            # output_genotypes.write(json.dumps(action)+"\n")
     output_variants.close()
     output_genotypes.close()
 

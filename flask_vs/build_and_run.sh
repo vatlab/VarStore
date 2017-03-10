@@ -15,4 +15,4 @@ docker rm   ${NAME}
 docker build -t flask_vs .
 
 
-docker run -d --name flask_vat_vs -p 80:80 flask_vs
+docker run -d --name flask_vat_vs -p 80:80 -v $(pwd)/app:/app flask_vs python /app/main.py

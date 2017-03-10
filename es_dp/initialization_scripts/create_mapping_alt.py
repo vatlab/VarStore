@@ -7,9 +7,9 @@ import logging.handlers
 import sys
 import subprocess
 
-syscall = subprocess.run(["docker-machine","ip","default"],stdout=subprocess.PIPE)
+syscall = subprocess.run(["docker-machine","ip","vat-dp"],stdout=subprocess.PIPE)
 dockermachine_hostname = syscall.stdout.decode("utf-8").strip()
-elasticsearch_port = "9252"
+elasticsearch_port = "9253"
 
 es_logger = logging.getLogger('elasticsearch')
 es_logger.setLevel(logging.ERROR)
@@ -24,7 +24,7 @@ es_tracer.addHandler(es_tracer_handler)
 ## initialize connection to elasticsearch:
 es       = Elasticsearch(host=dockermachine_hostname,port=elasticsearch_port)
 esclient = client.IndicesClient(es)
-index    = 'vatdpalt'
+index    = 'vatdp'
 
 ## delete index and start over:
 try:
@@ -40,36 +40,36 @@ esclient.create(index=index,body=create_body)
 
 ## mapping for 'vatdp' (calling all the documents 'vatdp' for the moment)
 mapping = {}
-mapping["vatdp_variants"] = {}
-mapping["vatdp_variants"]["properties"] = {}
-mapping["vatdp_variants"]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
-mapping["vatdp_variants"]["properties"]["chr"]   = { "type":"string" }
-mapping["vatdp_variants"]["properties"]["pos"]   = { "type":"integer"}
-mapping["vatdp_variants"]["properties"]["ref"]   = { "type":"string"}
-mapping["vatdp_variants"]["properties"]["alt"]   = { "type":"string"}
+mapping["dp_v"] = {}
+mapping["dp_v"]["properties"] = {}
+mapping["dp_v"]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
+mapping["dp_v"]["properties"]["chr"]   = { "type":"string" }
+mapping["dp_v"]["properties"]["pos"]   = { "type":"integer"}
+mapping["dp_v"]["properties"]["ref"]   = { "type":"string"}
+mapping["dp_v"]["properties"]["alt"]   = { "type":"string"}
 
 
 try:
-	esclient.put_mapping(index=index,doc_type='vatdp_variants',body=mapping["vatdp_variants"])
+	esclient.put_mapping(index=index,doc_type='dp_v',body=mapping["dp_v"])
 except Exception as e:
 	print ("Error in celllin document mapping")
 	print (e)
 
 mapping = {}
-mapping["vatdp_genotypes"] = {}
-mapping["vatdp_genotypes"]["properties"] = {}
-mapping["vatdp_genotypes"]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
-mapping["vatdp_genotypes"]["properties"]["Genotype"]   = {}
-mapping["vatdp_genotypes"]["properties"]["Genotype"]["type"] = "nested"
-mapping["vatdp_genotypes"]["properties"]["Genotype"]["properties"] = {}
-mapping["vatdp_genotypes"]["properties"]["Genotype"]["properties"]["SN"] = {"type":"string", "index": "not_analyzed"}
-mapping["vatdp_genotypes"]["properties"]["Genotype"]["properties"]["F"] = {"type":"integer"}
-mapping["vatdp_genotypes"]["properties"]["Genotype"]["properties"]["R"] = {"type":"integer"}
+mapping["dp_g"] = {}
+mapping["dp_g"]["properties"] = {}
+mapping["dp_g"]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
+mapping["dp_g"]["properties"]["Genotype"]   = {}
+mapping["dp_g"]["properties"]["Genotype"]["type"] = "nested"
+mapping["dp_g"]["properties"]["Genotype"]["properties"] = {}
+mapping["dp_g"]["properties"]["Genotype"]["properties"]["SN"] = {"type":"string", "index": "not_analyzed"}
+mapping["dp_g"]["properties"]["Genotype"]["properties"]["F"] = {"type":"integer"}
+mapping["dp_g"]["properties"]["Genotype"]["properties"]["R"] = {"type":"integer"}
 
 
 
 try:
-	esclient.put_mapping(index=index,doc_type='vatdp_genotypes',body=mapping["vatdp_genotypes"])
+	esclient.put_mapping(index=index,doc_type='dp_g',body=mapping["dp_g"])
 except Exception as e:
 	print ("Error in celllin document mapping")
 	print (e)

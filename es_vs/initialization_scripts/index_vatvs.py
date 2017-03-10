@@ -11,6 +11,7 @@ import subprocess
 
 import logging
 import logging.handlers
+import myvariant
 
 #if len(sys.argv) != 3:
 #	print "USAGE: "
@@ -23,7 +24,7 @@ import logging.handlers
 #	print "   ./index_cellline_documents.py 192.168.99.100 9221"
 #	sys.exit(0)
 
-syscall = subprocess.run(["docker-machine","ip","lms"],stdout=subprocess.PIPE)
+syscall = subprocess.run(["docker-machine","ip","default"],stdout=subprocess.PIPE)
 dockermachine_hostname = syscall.stdout.decode("utf-8").strip()
 elasticsearch_port = "9251"
 
@@ -44,7 +45,7 @@ es       = Elasticsearch(host=dockermachine_hostname,port=elasticsearch_port,tim
 esclient = client.IndicesClient(es)
 index    = 'vatvs'
 doc_type = 'vatvs'
-base_directory = '../../../vat-vs/'
+base_directory = '/Users/jma7/Development/variantTools/vat-vs/'
 filename="chr22.vcf"
 start_time = time.time()
 ## read in a data file
@@ -68,12 +69,13 @@ for line in data:
     source["pos"]=data_list[1]
     source["ref"]=data_list[3]
     source["alt"]=data_list[4]
-    source["variantID"]=data_list[2]
+    hgvsID=myvariant.format_hgvs(source["chr"],source["pos"],source["ref"],source["alt"])
+    source["variantID"]=hgvsID
     doc_id=data_list[2]
     action.append({"_index" : index, "_type" : doc_type, "_id" : doc_id, "_source" : json.dumps(source)})
 
 ## do a bulk index of what we have
-bulk_index = elasticsearch.helpers.bulk(es,action,chunk_size=2000)
+bulk_index = elasticsearch.helpers.bulk(es,action,chunk_size=20000)
 end_time = time.time()
 print ("Elapsed time to load " , filename , ": " , str(end_time-start_time))
 

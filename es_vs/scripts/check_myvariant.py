@@ -61,7 +61,7 @@ class myThread (threading.Thread):
 
 def listGenerator():
 	numIDs=len(action)-1
-	for upperRange in [10000]:
+	for upperRange in [1000]:
 		idPositions=[randint(0,numIDs) for p in range (0,upperRange)]
 		for idPos in idPositions:
 			chr=action[idPos]["chr"]
@@ -73,9 +73,9 @@ def listGenerator():
 def runTest(action):
 	results=[]
 	start_time=time.time()
-	response=mv.getvariants(listGenerator(), fields="dbsnp")
+	response=mv.getvariants(listGenerator(), fields="_id")
 	results.append(response)
-	# print(results)
+	print(results)
 	print("--- %s seconds ---" % (time.time() - start_time))
 
 # Create new threads

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-export DOCKERMACHINE_HOST=$(docker-machine ip default)
+export DOCKERMACHINE_HOST=$(docker-machine ip vat-dp)
 
 
-export ESPORT=9252
+export ESPORT=9253
 
 
 ## delete index and start over

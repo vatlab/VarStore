@@ -1,5 +1,4 @@
 import vatlab_dp_utils
-from elasticsearch_utils import esDatabase
 from random import randint
 import time
 from itertools import islice
@@ -24,6 +23,6 @@ files=vatlab_dp_utils.filesInFolder(folder)
 
 @timeit
 def indexGenome(folder,files):
-	vatlab_dp_utils.generateVCFinput(folder,files[0])
+	vatlab_dp_utils.generateVCFinputAlt(folder,files[0])
 
 indexGenome(folder,files)
