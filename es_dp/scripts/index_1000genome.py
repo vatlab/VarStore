@@ -23,6 +23,9 @@ files=vatlab_dp_utils.filesInFolder(folder)
 
 @timeit
 def indexGenome(folder,files):
-	vatlab_dp_utils.generateVCFinputAlt(folder,files[0])
+	# vatlab_dp_utils.generateVCFinput(folder,files[0])
+	vatlab_dp_utils.generateVCFinputCol(folder,files[0])
+
+	
 
 indexGenome(folder,files)

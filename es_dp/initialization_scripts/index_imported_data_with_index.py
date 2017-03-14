@@ -16,8 +16,8 @@ import logging
 import logging.handlers
 
 
-syscall = subprocess.run(["docker-machine","ip","default"],stdout=subprocess.PIPE)
-elasticsearch_port = "9251"
+syscall = subprocess.run(["docker-machine","ip","vat-dp"],stdout=subprocess.PIPE)
+elasticsearch_port = "9253"
 dockermachine_hostname = syscall.stdout.decode("utf-8").strip()
 
 
@@ -38,7 +38,9 @@ es       = Elasticsearch(host=dockermachine_hostname,port=elasticsearch_port,tim
 esclient = client.IndicesClient(es)
 
 
-filePath="/Users/jma7/Development/vat_data_provider/es_dp/input_file/test_data_genotypes_cell.txt"
+filePath="/Users/jma7/Development/vat_data_provider/es_dp/input_file/test_data_variants_noindex.txt"
+index="vatdp"
+doc_type="dp_v"
 result = open(filePath,'r')
 
 def bulkGenerator(result):
@@ -47,7 +49,7 @@ def bulkGenerator(result):
       yield json.loads(item)
 
 start_time = time.time() 
-bulk_index = elasticsearch.helpers.bulk(es,bulkGenerator(result),chunk_size=50000)
+bulk_index = elasticsearch.helpers.bulk(es,bulkGenerator(result),chunk_size=50000,index=index,doc_type=doc_type)
 end_time = time.time()
 
 
@@ -58,8 +60,3 @@ end_time = time.time()
 # end_time = time.time()
 
 print ("Time to load all files: " , str(end_time-start_time))
-
-
-
-
-

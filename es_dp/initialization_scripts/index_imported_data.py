@@ -38,7 +38,7 @@ es       = Elasticsearch(host=dockermachine_hostname,port=elasticsearch_port,tim
 esclient = client.IndicesClient(es)
 
 
-filePath="/Users/jma7/Development/vat_data_provider/es_dp/input_file/test_data_variants_cell.txt"
+filePath="/Users/jma7/Development/vat_data_provider/es_dp/input_file/test_data_genotypes_cell.txt"
 result = open(filePath,'r')
 
 def bulkGenerator(result):

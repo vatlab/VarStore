@@ -37,17 +37,18 @@ def get_variantIDs():
         abort(400)
     ids=request.json.get('ids')
     result=apis.get_variantIDs(ids)
+    print(result,file=sys.stderr)
     return jsonify(result)
 
 
-@app.route('/vatvs/variants/<string:chromosome>', methods=['GET'])
-def get_variants_by_chromosome_range(chr,range):
-    pass
+# @app.route('/vatvs/variants/<string:chromosome>', methods=['GET'])
+# def get_variants_by_chromosome_range(chr,range):
+#     pass
 
 
-@app.route('/vatvs/variants/<string:field>', methods=['GET'])
-def get_variants_by_field_range(field,range):
-    pass
+# @app.route('/vatvs/variants/<string:field>', methods=['GET'])
+# def get_variants_by_field_range(field,range):
+#     pass
 
 
 @app.route('/vatvs/variants/gene/<string:geneName>', methods=['GET'])

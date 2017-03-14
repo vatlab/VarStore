@@ -24,7 +24,8 @@ es_tracer.addHandler(es_tracer_handler)
 ## initialize connection to elasticsearch:
 es       = Elasticsearch(host=dockermachine_hostname,port=elasticsearch_port)
 esclient = client.IndicesClient(es)
-index    = 'vatdp'
+index    = 'vatdp_row'
+doc_type  ="va"
 
 ## delete index and start over:
 try:
@@ -40,36 +41,20 @@ esclient.create(index=index,body=create_body)
 
 ## mapping for 'vatdp' (calling all the documents 'vatdp' for the moment)
 mapping = {}
-mapping["dp_v"] = {}
-mapping["dp_v"]["properties"] = {}
-mapping["dp_v"]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
-mapping["dp_v"]["properties"]["chr"]   = { "type":"string" }
-mapping["dp_v"]["properties"]["pos"]   = { "type":"integer"}
-mapping["dp_v"]["properties"]["ref"]   = { "type":"string"}
-mapping["dp_v"]["properties"]["alt"]   = { "type":"string"}
-
-
-try:
-	esclient.put_mapping(index=index,doc_type='dp_v',body=mapping["dp_v"])
-except Exception as e:
-	print ("Error in celllin document mapping")
-	print (e)
-
-mapping = {}
-mapping["dp_g"] = {}
-mapping["dp_g"]["properties"] = {}
-mapping["dp_g"]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
-mapping["dp_g"]["properties"]["Genotype"]   = {}
-mapping["dp_g"]["properties"]["Genotype"]["type"] = "nested"
-mapping["dp_g"]["properties"]["Genotype"]["properties"] = {}
-mapping["dp_g"]["properties"]["Genotype"]["properties"]["SN"] = {"type":"string", "index": "not_analyzed"}
-mapping["dp_g"]["properties"]["Genotype"]["properties"]["r"] = {"type":"integer"}
-mapping["dp_g"]["properties"]["Genotype"]["properties"]["a"] = {"type":"integer"}
+mapping[doc_type] = {}
+mapping[doc_type]["properties"] = {}
+mapping[doc_type]["properties"]["variantID"]  = { "type":"string", "index":"not_analyzed"}
+mapping[doc_type]["properties"]["Genotype"]   = {}
+mapping[doc_type]["properties"]["Genotype"]["type"] = "nested"
+mapping[doc_type]["properties"]["Genotype"]["properties"] = {}
+mapping[doc_type]["properties"]["Genotype"]["properties"]["SN"] = {"type":"string", "index": "not_analyzed"}
+mapping[doc_type]["properties"]["Genotype"]["properties"]["r"] = {"type":"integer"}
+mapping[doc_type]["properties"]["Genotype"]["properties"]["a"] = {"type":"integer"}
 
 
 
 try:
-	esclient.put_mapping(index=index,doc_type='dp_g',body=mapping["dp_g"])
+	esclient.put_mapping(index=index,doc_type=doc_type,body=mapping[doc_type])
 except Exception as e:
 	print ("Error in celllin document mapping")
 	print (e)

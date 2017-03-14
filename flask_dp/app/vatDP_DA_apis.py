@@ -25,9 +25,9 @@ def get_genotypes_by_variantIDs(ids):
         for genotype in result["hits"]["hits"]:
             sampleName=genotype["_source"]["Genotype"]["SN"]
             variantID=genotype["_source"]["variantID"]
-            forward=genotype["_source"]["Genotype"]["F"]
-            reverse=genotype["_source"]["Genotype"]["R"]
-            genotypes[variantID][sampleName]=str(forward)+"/"+str(reverse)
+            ref=genotype["_source"]["Genotype"]["r"]
+            alt=genotype["_source"]["Genotype"]["a"]
+            genotypes[variantID][sampleName]=str(ref)+"/"+str(alt)
     except:
           e = sys.exc_info()[0]
           print(e)
@@ -44,15 +44,15 @@ def get_genotype_by_samplename(sample):
     query["query"]["nested"]["query"]["bool"]={}
     query["query"]["nested"]["query"]["bool"]["must"]=[]
     query["query"]["nested"]["query"]["bool"]["must"].append({"term":{"Genotype.SN":sample}})
-    query["size"]=1000000
+    query["size"]=100000
     result=db.runQuery_onGenotypes(query)
     genotypes={}
     try:
         for genotype in result["hits"]["hits"]:
             variantID=genotype["_source"]["variantID"]
-            forward=genotype["_source"]["Genotype"]["F"]
-            reverse=genotype["_source"]["Genotype"]["R"]
-            genotypes[variantID]=str(forward)+"/"+str(reverse)
+            ref=genotype["_source"]["Genotype"]["r"]
+            alt=genotype["_source"]["Genotype"]["a"]
+            genotypes[variantID]=str(ref)+"/"+str(alt)
     except:
           e = sys.exc_info()[0]
           print(e)
