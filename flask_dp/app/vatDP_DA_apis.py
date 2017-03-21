@@ -7,8 +7,6 @@ import sys
 
 
 
-
-
 def get_genotypes_by_variantIDs(ids):
     db=dprun.get_db()
     query={}

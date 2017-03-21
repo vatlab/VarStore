@@ -1,3 +1,4 @@
 requests==2.12.4
 simplejson==3.10.0
-myvariant==0.3.1
+Flask==0.12
+decorator==4.0.10

@@ -5,3 +5,5 @@ input_file
 _build
 _static
 _templates
+hail.log
+result*.txt

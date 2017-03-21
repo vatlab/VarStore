@@ -37,7 +37,7 @@ def get_variantIDs():
         abort(400)
     ids=request.json.get('ids')
     result=apis.get_variantIDs(ids)
-    print(result,file=sys.stderr)
+    # print(result,file=sys.stderr)
     return jsonify(result)
 
 
