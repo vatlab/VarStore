@@ -14,21 +14,21 @@ def timeit(method):
     return timed
 
 # Get genotypes by varaint ID
-@timeit
-def get_genotypes_by_variantIDs():
-	res=requests.post("http://192.168.99.104/vatdp/variants/genotypes",json={"ids":["chr22:g.16211244G>T","chr22:g.16058883A>G"]})
-	print(res.json())
+# @timeit
+# def get_genotypes_by_variantIDs():
+# 	res=requests.post("http://192.168.99.104/vatdp/variants/genotypes",json={"ids":["chr22:g.16211244G>T","chr22:g.16058883A>G"]})
+# 	print(res.json())
 
-get_genotypes_by_variantIDs()
+# get_genotypes_by_variantIDs()
 
 
 ## Get genotypes by sample Name
-# @timeit
-# def get_genotypes_by_sampleName():
-# 	res=requests.get("http://192.168.99.104/vatdp/samples/genotypes/HG00096")
-# 	print(res.json())
+@timeit
+def get_genotypes_by_sampleName():
+	res=requests.get("http://192.168.99.104/vatdp/samples/genotypes/HG00096")
+	print(res.json())
 
-# get_genotypes_by_sampleName()
+get_genotypes_by_sampleName()
 
 ## Get metadata by variantID
 # res=requests.get("http://192.168.99.104/vatdp/variants/rs9628389")

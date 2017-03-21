@@ -41,6 +41,24 @@ with open("/Users/jma7/Development/hail/test/variantChr22.tsv","r") as infile:
 
 
 # In[52]:
+def iter_n(iterable, n):
+    it = iter(iterable)
+    while True:
+        chunk = tuple(islice(it, n))
+        if not chunk:
+            return
+        yield chunk
+
+step=10000
+with open("/Users/jma7/Development/hail/test/hgvsIDs_iter.tsv","w") as outfile:
+    outfile.write("VariantID\thgvsID\n")
+	for batch in iter_n(originalIDs,step):
+		resVariants=requests.post("http://192.168.99.105/vatvs/variants/variantsID",json={"ids":batch})
+		for id in resVariants.json():
+        	outfile.write(id+"\n")    
+
+
+
 
 resVariants=requests.post("http://192.168.99.103/vatvs/variants/variantsID",json={"ids":originalIDs})
 
