@@ -2,6 +2,7 @@
 elasticsearch_data
 input_file
 *.pyc
+*.h5
 _build
 _static
 _templates
