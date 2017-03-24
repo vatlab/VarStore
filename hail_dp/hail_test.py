@@ -99,5 +99,5 @@ queryBySample.export_genotypes("/Users/jma7/Development/hail/test/queryBySample.
 # In[ ]:
 vdsanno.query_genotypes('json(gs.filter(g=>va.vID.hgvsID=="chr22:g.16211244G>T").map(g=>{s:s.id,gt:g.gt,hgvsID:va.vID.hgvsID}).take(5))')
 
-
-
+vds.filter_samples_expr('s=="HG00096"').query_genotypes('json(gs.map(g=>{gt:g.gt,hgvsID:va.vID.hgvsID}).take(5))')
+vds.filter_variants_expr('va.vID.hgvsID=="chr22:g.16211244G>T"').query_genotypes('json(gs.map(g=>{s:s.id,gt:g.gt}).take(5))')
